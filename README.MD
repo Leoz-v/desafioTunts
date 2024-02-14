@@ -20,18 +20,12 @@ pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-
         Create credentials (OAuth client ID).
         Download the JSON file of the credentials and save it as credentials.json in the project root.
 
-    Install Dependencies:
-
-    bash
-
-pip install -r requirements.txt
-
 Run the Project:
 
-bash
+```bash
 
     python main.py
-
+```
     The application will guide you through the authentication process and demonstrate the data retrieval, processing, and updating steps.
 
 Configuration
