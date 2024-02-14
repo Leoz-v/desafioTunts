@@ -1,7 +1,9 @@
-#Google Sheets Data Processor
+# Google Sheets Data Processor
+
 This Python project utilizes the Google Sheets API to retrieve data from a Google Spreadsheet, process it using the math library, and update the spreadsheet with the results.
 
-##Requirements
+## Requirements
+
 -Python 3.10.7 or above.
 -PIP package management tool.
 -Google account
@@ -10,7 +12,7 @@ This Python project utilizes the Google Sheets API to retrieve data from a Googl
 ```bash
 pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 ```
-Setup
+## Setup
 
     Google API Credentials:
         Create a project in the Google Cloud Console.
