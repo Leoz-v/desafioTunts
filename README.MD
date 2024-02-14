@@ -7,7 +7,7 @@ This Python project utilizes the Google Sheets API to retrieve data from a Googl
 - Python 3.10.7 or above.
 - PIP package management tool.
 - Google account
-- You have the required libraries installed. You can use the following command to install them:
+- Ensure you have the required libraries installed. You can use the following command to install them:
 
 ```bash
 pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
