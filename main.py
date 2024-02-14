@@ -59,14 +59,14 @@ def main():
     for row in values:
       # Print columns A to F, which correspond to indices 0 to 5.
       s = situation(int(row[2]), int(row[3]), int(row[4]), int(row[5]),60)
-      situations.append([s])
+      situations.append(s)
     
     print(situations)
     body = {"values": situations}
     result = (
         sheet.values().update(
             spreadsheetId=SAMPLE_SPREADSHEET_ID,
-            range="G4:G27",
+            range="G4:H27",
             valueInputOption="RAW",
             body=body,
         )
