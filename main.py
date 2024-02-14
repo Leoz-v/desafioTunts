@@ -7,6 +7,8 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 from grades import situation
+from tqdm import tqdm
+
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
@@ -15,10 +17,31 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 SAMPLE_SPREADSHEET_ID = "1pXdpVkG-y1EkF_ro6Y5vbPxAa9-s4ipM-KuFMz_Xa00"
 SAMPLE_RANGE_NAME = "engenharia_de_software!A4:H27"
 
+def createService(creds):
+  service = build("sheets", "v4", credentials=creds)
+  return service
+
+def loadSheet(service):
+  # Call the Sheets API
+  sheet = service.spreadsheets()
+  result = (
+      sheet.values()
+      .get(spreadsheetId=SAMPLE_SPREADSHEET_ID, range=SAMPLE_RANGE_NAME)
+      .execute()
+  )
+  return result.get("values", [])
+
+#Use information like spreadsheet id and range to determinate where it will put the data
+def updateSpreadsheet(situations, service):
+  body = {"values": situations}
+  service.spreadsheets().values().update(
+              spreadsheetId=SAMPLE_SPREADSHEET_ID,
+              range="G4:H27",
+              valueInputOption="RAW",
+              body=body,
+              ).execute()
+
 def main():
-  """Shows basic usage of the Sheets API.
-  Prints values from a sample spreadsheet.
-  """
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first
@@ -39,39 +62,27 @@ def main():
       token.write(creds.to_json())
 
   try:
-    service = build("sheets", "v4", credentials=creds)
-
-    # Call the Sheets API
-    sheet = service.spreadsheets()
-    result = (
-        sheet.values()
-        .get(spreadsheetId=SAMPLE_SPREADSHEET_ID, range=SAMPLE_RANGE_NAME)
-        .execute()
-    )
-    values = result.get("values", [])
-
+    #Create a service and load all sheet values
+    service = createService(creds)
+    values = loadSheet(service)
+    
+    #verify if it wasn't possible to load the sheet data
     if not values:
       print("No data found.")
       return
 
-
+    print("Sheet data loaded successfully!")
+    #calculate all necessary data before updating the spreadsheet
     situations = []
-    for row in values:
-      # Print columns A to F, which correspond to indices 0 to 5.
+    for row in tqdm(values, desc="Processing data", unit="iteration"):
       s = situation(int(row[2]), int(row[3]), int(row[4]), int(row[5]),60)
       situations.append(s)
+
+    updateSpreadsheet(situations,service)
     
-    print(situations)
-    body = {"values": situations}
-    result = (
-        sheet.values().update(
-            spreadsheetId=SAMPLE_SPREADSHEET_ID,
-            range="G4:H27",
-            valueInputOption="RAW",
-            body=body,
-        )
-        .execute()
-    )
+    
+    print("Data processed successfully!")
+    print("Please check the spreadsheet.")
 
   except HttpError as err:
     print(err)
