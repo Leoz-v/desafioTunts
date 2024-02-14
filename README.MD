@@ -14,12 +14,6 @@ pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-
 ```
 ## Setup
 
-    Google API Credentials:
-        Create a project in the Google Cloud Console.
-        Enable the Google Sheets API for the project.
-        Create credentials (OAuth client ID).
-        Download the JSON file of the credentials and save it as credentials.json in the project root.
-
 Run the Project:
 
 ```bash
