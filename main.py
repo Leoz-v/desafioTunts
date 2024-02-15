@@ -86,6 +86,7 @@ def main():
       return
 
     print("Sheet data loaded successfully!")
+    
     #calculate all necessary data before updating the spreadsheet
     situations = []
 
