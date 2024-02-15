@@ -8,6 +8,7 @@ from googleapiclient.errors import HttpError
 
 from grades import situation
 from tqdm import tqdm
+import re
 
 
 # If modifying these scopes, delete the file token.json.
@@ -15,7 +16,7 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
 
 # The ID and range of a sample spreadsheet.
 SAMPLE_SPREADSHEET_ID = "1pXdpVkG-y1EkF_ro6Y5vbPxAa9-s4ipM-KuFMz_Xa00"
-SAMPLE_RANGE_NAME = "engenharia_de_software!A4:H27"
+SAMPLE_RANGE_NAME = "engenharia_de_software!A1:H27"
 
 def createService(creds):
   service = build("sheets", "v4", credentials=creds)
@@ -40,6 +41,19 @@ def updateSpreadsheet(situations, service):
               valueInputOption="RAW",
               body=body,
               ).execute()
+  
+def extract_numbers(lst):
+    """
+    Extracts numbers from a list of strings using regular expressions.
+    """
+    # Compile a regular expression pattern to match digits
+    pattern = re.compile(r'\d+')
+     
+    # Use the pattern to extract all digits from each string in the list
+    extracted_numbers = [pattern.findall(s) for s in lst]
+     
+    # Convert the extracted numbers from strings to integers
+    return [int(x) for sublist in extracted_numbers for x in sublist]
 
 def main():
   creds = None
@@ -74,8 +88,11 @@ def main():
     print("Sheet data loaded successfully!")
     #calculate all necessary data before updating the spreadsheet
     situations = []
-    for row in tqdm(values, desc="Processing data", unit="iteration"):
-      s = situation(int(row[2]), int(row[3]), int(row[4]), int(row[5]),60)
+
+    numberOfClasses = extract_numbers(values[1])
+    
+    for row in tqdm(values[3:], desc="Processing data", unit="iteration"):
+      s = situation(int(row[2]), int(row[3]), int(row[4]), int(row[5]),numberOfClasses[0])
       situations.append(s)
 
     updateSpreadsheet(situations,service)
